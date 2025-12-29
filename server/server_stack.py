@@ -2,6 +2,7 @@ import os
 from aws_cdk import (
     aws_lambda,
     aws_dynamodb,
+    aws_lambda_python_alpha,
     Stack,
     RemovalPolicy,
     CfnOutput,
@@ -18,50 +19,53 @@ class ServerStack(Stack):
 
         secrets_table = aws_dynamodb.Table(
             self, "secrets_table",
-            partition_key=aws_dynamodb.Attribute(name="id", type=aws_dynamodb.AttributeType.STRING),
+            partition_key=aws_dynamodb.Attribute(
+                name="id",
+                type=aws_dynamodb.AttributeType.STRING
+            ),
             time_to_live_attribute="expiresAt",  # Auto-delete
             removal_policy=RemovalPolicy.DESTROY
         )
 
-        get_secrets_lambda = aws_lambda.Function(self, "secret_get_secrets_lambda_function",
-                                              runtime=aws_lambda.Runtime.PYTHON_3_13,
-                                              handler="lambda_function.lambda_handler",
-                                              code=aws_lambda.Code.from_asset(
-                                              os.path.join(project_root, "static", "secret-get")
-                                              ))
+        get_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "secret_get_secrets_lambda_function",
+                                                                    runtime=aws_lambda.Runtime.PYTHON_3_13,
+                                                                    entry=os.path.join(project_root, "static", "secret-get"),
+                                                                    index="main.py",
+                                                                    handler="lambda_handler",
+                                                                    )
 
-        get_secrets_lambda.add_environment("secrets", secrets_table.table_name)
+        get_secrets_lambda.add_environment("TABLE_NAME", secrets_table.table_name)
 
         secrets_table.grant_write_data(get_secrets_lambda)
+        secrets_table.grant_read_data(get_secrets_lambda)
 
-        create_secrets_lambda = aws_lambda.Function(self, "create_secrets_lambda_function",
-                                              runtime=aws_lambda.Runtime.PYTHON_3_13,
-                                              handler="lambda_function.lambda_handler",
-                                              code=aws_lambda.Code.from_asset(
-                                              os.path.join(project_root, "static", "secret-create")
-                                              ))
+        create_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "create_secrets_lambda_function",
+                                                                    runtime=aws_lambda.Runtime.PYTHON_3_13,
+                                                                    entry=os.path.join(project_root, "static", "secret-create"),  # Directory with code
+                                                                    index="main.py",  # File with handler
+                                                                    handler="lambda_handler",  # Function name
+                                                                    )
 
         secrets_table.grant_write_data(create_secrets_lambda)
 
         create_secrets_lambda.add_environment("TABLE_NAME", secrets_table.table_name)
 
-        secrets_table.grant_read_data(create_secrets_lambda)
 
-        put_url = get_secrets_lambda.add_function_url(
-            auth_type=aws_lambda.FunctionUrlAuthType.NONE,
-            cors=aws_lambda.FunctionUrlCorsOptions(
-                # allowed_origins=["https://safe-send.net"],
-                allowed_origins=["*"],
-                allowed_methods=[aws_lambda.HttpMethod.GET]
-            )
-        )
-
-        get_url = create_secrets_lambda.add_function_url(
+        put_url = create_secrets_lambda.add_function_url(
             auth_type=aws_lambda.FunctionUrlAuthType.NONE,
             cors=aws_lambda.FunctionUrlCorsOptions(
                 # allowed_origins=["https://safe-send.net"],
                 allowed_origins=["*"],
                 allowed_methods=[aws_lambda.HttpMethod.PUT]
+            )
+        )
+
+        get_url = get_secrets_lambda.add_function_url(
+            auth_type=aws_lambda.FunctionUrlAuthType.NONE,
+            cors=aws_lambda.FunctionUrlCorsOptions(
+                # allowed_origins=["https://safe-send.net"],
+                allowed_origins=["*"],
+                allowed_methods=[aws_lambda.HttpMethod.GET]
             )
         )
 
