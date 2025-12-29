@@ -1,19 +1,76 @@
+import os
 from aws_cdk import (
-    # Duration,
+    aws_lambda,
+    aws_dynamodb,
     Stack,
-    # aws_sqs as sqs,
+    RemovalPolicy,
+    CfnOutput,
 )
+
 from constructs import Construct
 
 class ServerStack(Stack):
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+        super().__init__(scope, id, **kwargs)
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+        stack_dir = os.path.dirname(__file__)
+        project_root = os.path.dirname(stack_dir)
 
-        # The code that defines your stack goes here
+        secrets_table = aws_dynamodb.Table(
+            self, "secrets_table",
+            partition_key=aws_dynamodb.Attribute(name="id", type=aws_dynamodb.AttributeType.STRING),
+            time_to_live_attribute="expiresAt",  # Auto-delete
+            removal_policy=RemovalPolicy.DESTROY
+        )
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "ServerQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+        get_secrets_lambda = aws_lambda.Function(self, "secret_get_secrets_lambda_function",
+                                              runtime=aws_lambda.Runtime.PYTHON_3_13,
+                                              handler="lambda_function.lambda_handler",
+                                              code=aws_lambda.Code.from_asset(
+                                              os.path.join(project_root, "static", "secret-get")
+                                              ))
+
+        get_secrets_lambda.add_environment("secrets", secrets_table.table_name)
+
+        secrets_table.grant_write_data(get_secrets_lambda)
+
+        create_secrets_lambda = aws_lambda.Function(self, "create_secrets_lambda_function",
+                                              runtime=aws_lambda.Runtime.PYTHON_3_13,
+                                              handler="lambda_function.lambda_handler",
+                                              code=aws_lambda.Code.from_asset(
+                                              os.path.join(project_root, "static", "secret-create")
+                                              ))
+
+        secrets_table.grant_write_data(create_secrets_lambda)
+
+        create_secrets_lambda.add_environment("TABLE_NAME", secrets_table.table_name)
+
+        secrets_table.grant_read_data(create_secrets_lambda)
+
+        put_url = get_secrets_lambda.add_function_url(
+            auth_type=aws_lambda.FunctionUrlAuthType.NONE,
+            cors=aws_lambda.FunctionUrlCorsOptions(
+                # allowed_origins=["https://safe-send.net"],
+                allowed_origins=["*"],
+                allowed_methods=[aws_lambda.HttpMethod.GET]
+            )
+        )
+
+        get_url = create_secrets_lambda.add_function_url(
+            auth_type=aws_lambda.FunctionUrlAuthType.NONE,
+            cors=aws_lambda.FunctionUrlCorsOptions(
+                # allowed_origins=["https://safe-send.net"],
+                allowed_origins=["*"],
+                allowed_methods=[aws_lambda.HttpMethod.PUT]
+            )
+        )
+
+        CfnOutput(self, "PutSecretUrl", 
+                value=put_url.url,
+                description="API endpoint to create secrets"
+                )
+
+        CfnOutput(self, "GetSecretUrl",
+                value=get_url.url, 
+                description="API endpoint to retrieve secrets"
+                )

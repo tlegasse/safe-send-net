@@ -17,3 +17,6 @@ An example encrypted string would look like so:
 # Static content
 Some content, such as lambda function code and the front-end app are served statically.
 They live in the `static` directory
+
+ServerStack.GetSecretUrl = https://22erbbnurht77kwkxzmfbkqp240laulz.lambda-url.us-east-1.on.aws/
+ServerStack.PutSecretUrl = https://fz5bva7ou3qhoyuhzsz6km2r5u0dgjet.lambda-url.us-east-1.on.aws/

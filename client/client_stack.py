@@ -30,7 +30,7 @@ class ClientStack(Stack):
             self,
             "client_bucket",
             removal_policy=RemovalPolicy.DESTROY,
-            auto_delete_objects=True,
+            auto_delete_objects=True
         )
 
         stack_dir = os.path.dirname(__file__)
@@ -60,10 +60,10 @@ class ClientStack(Stack):
         )
 
         # Certificate (must be in us-east-1)
-        cert = acm.Certificate(self, "SiteCert",
-            domain_name="safe-send.net",
-            validation=acm.CertificateValidation.from_dns(client_zone)
-        )
+        # cert = acm.Certificate(self, "SiteCert",
+        #     domain_name="safe-send.net",
+        #     validation=acm.CertificateValidation.from_dns(client_zone)
+        # )
 
         # Distribution
         distribution = cloudfront.Distribution(
@@ -76,8 +76,8 @@ class ClientStack(Stack):
                 allowed_methods=cloudfront.AllowedMethods.ALLOW_GET_HEAD,
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
             ),
-            domain_names=["safe-send.net"],
-            certificate=cert,
+            # domain_names=["safe-send.net"],
+            # certificate=cert,
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
             enable_logging=False  # Privacy
         )
