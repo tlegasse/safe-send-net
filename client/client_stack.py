@@ -53,23 +53,6 @@ class ClientStack(Stack):
             ]
         )
 
-        response_headers_policy=cloudfront.ResponseHeadersPolicy(
-            self, "SecurityHeaders",
-            security_headers_behavior=cloudfront.ResponseSecurityHeadersBehavior(
-                content_type_options=cloudfront.ResponseHeadersContentTypeOptions(override=True),
-                frame_options=cloudfront.ResponseHeadersFrameOptions(frame_option=cloudfront.HeadersFrameOption.DENY, override=True),
-                content_security_policy=cloudfront.ResponseHeadersContentSecurityPolicy(
-                    content_security_policy="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
-                    override=True
-                ),
-                strict_transport_security=cloudfront.ResponseHeadersStrictTransportSecurity(
-                    access_control_max_age=Duration.days(730),
-                    include_subdomains=True,
-                    override=True
-                )
-            )
-        )
-
         client_zone = route53.PublicHostedZone(self, "HostedZone",
                                  zone_name="safe-send.net"
                                  )
@@ -113,6 +96,23 @@ class ClientStack(Stack):
             validation=acm.CertificateValidation.from_dns(client_zone)
         )
 
+        response_headers_policy=cloudfront.ResponseHeadersPolicy(
+            self, "SecurityHeaders",
+            security_headers_behavior=cloudfront.ResponseSecurityHeadersBehavior(
+                content_type_options=cloudfront.ResponseHeadersContentTypeOptions(override=True),
+                frame_options=cloudfront.ResponseHeadersFrameOptions(frame_option=cloudfront.HeadersFrameOption.DENY, override=True),
+                content_security_policy=cloudfront.ResponseHeadersContentSecurityPolicy(
+                    content_security_policy="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+                    override=True
+                ),
+                strict_transport_security=cloudfront.ResponseHeadersStrictTransportSecurity(
+                    access_control_max_age=Duration.days(730),
+                    include_subdomains=True,
+                    override=True
+                )
+            )
+        )
+
         # Distribution
         distribution = cloudfront.Distribution(
             self,
@@ -122,7 +122,8 @@ class ClientStack(Stack):
                 origin=origin,
                 compress=True,
                 allowed_methods=cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                response_headers_policy=response_headers_policy
             ),
             domain_names=["safe-send.net"],
             certificate=cert,
