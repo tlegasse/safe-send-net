@@ -2,7 +2,6 @@ import os
 from aws_cdk import (
     aws_lambda,
     aws_dynamodb,
-    aws_logs,
     aws_lambda_python_alpha,
     Stack,
     RemovalPolicy,
@@ -30,7 +29,7 @@ class ServerStack(Stack):
 
         get_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "secret_get_secrets_lambda_function",
                                                                     # reserved_concurrent_executions=5,
-                                                                    log_retention=aws_logs.RetentionDays.ONE_DAY,
+                                                                    log_retention=None,
                                                                     runtime=aws_lambda.Runtime.PYTHON_3_13,
                                                                     entry=os.path.join(project_root, "static", "secret-get"),
                                                                     index="main.py",
@@ -44,7 +43,7 @@ class ServerStack(Stack):
 
         create_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "create_secrets_lambda_function",
                                                                     # reserved_concurrent_executions=5,
-                                                                    log_retention=aws_logs.RetentionDays.ONE_DAY,
+                                                                    log_retention=None,
                                                                     runtime=aws_lambda.Runtime.PYTHON_3_13,
                                                                     entry=os.path.join(project_root, "static", "secret-create"),
                                                                     index="main.py",
