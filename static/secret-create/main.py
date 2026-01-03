@@ -7,10 +7,28 @@ from datetime import datetime, timedelta
 
 # Initialize the S3 client outside of the handler
 dynamodb = boto3.resource('dynamodb')
+table_name = os.environ['TABLE_NAME']
+request_invalid_message = "Request is not valid."
+
+allowed_intervals = [
+    3600,
+    86400,
+    172800,
+    604800
+]
 
 # Initialize the logger
 logger = logging.getLogger()
 logger.setLevel("INFO")
+
+def is_base64_encoded(payload):
+    try:
+        encoded_payload = payload.encode('latin-1').decode('unicode_escape').encode('utf-8')
+        payload_validates = base64.b64encode(base64.b64decode(encoded_payload)) == encoded_payload
+        if not payload_validates:
+            raise Exception(request_invalid_message)
+    except Exception as e:
+        raise Exception(request_invalid_message)
 
 def lambda_handler(event, context):
     try:
@@ -19,24 +37,33 @@ def lambda_handler(event, context):
         else:
             body = json.loads(event['body'])
 
-        # Extract your data
         iv = body['iv']
         payload = body['payload']
-        ttl_seconds = body.get('expiry', 86400)  # Default 24 hours
+        secret_id = context.aws_request_id
 
-        # Save to DynamoDB
-        table_name = os.environ['TABLE_NAME']
-        table = dynamodb.Table(table_name)
+        ttl_seconds = body.get('expiry', 86400)
 
-        secret_id = context.aws_request_id  # Use Lambda request ID as unique ID
+        if ttl_seconds not in allowed_intervals:
+            raise Exception(request_invalid_message)
+
         expires_at = int((datetime.now() + timedelta(seconds=ttl_seconds)).timestamp())
 
-        table.put_item(Item={
-            'id': secret_id,
-            'iv': iv,
-            'payload': payload,
-            'expiresAt': expires_at
-        })
+        is_base64_encoded(iv)
+        is_base64_encoded(payload)
+
+        table = dynamodb.Table(table_name)
+
+        if not table:
+            raise Exception("Internal error")
+
+        table.put_item(
+            Item = {
+                'id': secret_id,
+                'iv': iv,
+                'payload': payload,
+                'expiresAt': expires_at
+            }
+        )
 
         return {
             'statusCode': 200,

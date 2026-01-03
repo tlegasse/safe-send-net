@@ -28,6 +28,7 @@ class ServerStack(Stack):
         )
 
         get_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "secret_get_secrets_lambda_function",
+                                                                    reserved_concurrent_executions=5,
                                                                     runtime=aws_lambda.Runtime.PYTHON_3_13,
                                                                     entry=os.path.join(project_root, "static", "secret-get"),
                                                                     index="main.py",
@@ -40,10 +41,11 @@ class ServerStack(Stack):
         secrets_table.grant_read_data(get_secrets_lambda)
 
         create_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "create_secrets_lambda_function",
+                                                                    reserved_concurrent_executions=5,
                                                                     runtime=aws_lambda.Runtime.PYTHON_3_13,
-                                                                    entry=os.path.join(project_root, "static", "secret-create"),  # Directory with code
-                                                                    index="main.py",  # File with handler
-                                                                    handler="lambda_handler",  # Function name
+                                                                    entry=os.path.join(project_root, "static", "secret-create"),
+                                                                    index="main.py",
+                                                                    handler="lambda_handler",
                                                                     )
 
         secrets_table.grant_write_data(create_secrets_lambda)
@@ -54,8 +56,8 @@ class ServerStack(Stack):
         put_url = create_secrets_lambda.add_function_url(
             auth_type=aws_lambda.FunctionUrlAuthType.NONE,
             cors=aws_lambda.FunctionUrlCorsOptions(
-                # allowed_origins=["https://safe-send.net"],
-                allowed_origins=["*"],
+                allowed_origins=["https://safe-send.net"],
+                # allowed_origins=["*"],
                 allowed_methods=[aws_lambda.HttpMethod.PUT]
             )
         )
@@ -63,8 +65,8 @@ class ServerStack(Stack):
         get_url = get_secrets_lambda.add_function_url(
             auth_type=aws_lambda.FunctionUrlAuthType.NONE,
             cors=aws_lambda.FunctionUrlCorsOptions(
-                # allowed_origins=["https://safe-send.net"],
-                allowed_origins=["*"],
+                allowed_origins=["https://safe-send.net"],
+                # allowed_origins=["*"],
                 allowed_methods=[aws_lambda.HttpMethod.GET]
             )
         )

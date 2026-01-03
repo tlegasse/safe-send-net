@@ -9,6 +9,7 @@ from aws_cdk import (
     aws_cloudfront as cloudfront,
     aws_cloudfront_origins as origins,
     aws_certificatemanager as acm,
+    aws_wafv2 as wafv2,
     CfnOutput,
     aws_route53_targets as route53_targets,
 )
@@ -21,6 +22,35 @@ from constructs import Construct
 class ClientStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        waf = wafv2.CfnWebACL(
+            self, "WebACL",
+            default_action=wafv2.CfnWebACL.DefaultActionProperty(allow={}),
+            scope="CLOUDFRONT",
+            visibility_config=wafv2.CfnWebACL.VisibilityConfigProperty(
+                cloud_watch_metrics_enabled=True,
+                metric_name="safe-send-waf",
+                sampled_requests_enabled=True
+            ),
+            rules=[
+                wafv2.CfnWebACL.RuleProperty(
+                    name="RateLimit100",
+                    priority=1,
+                    action=wafv2.CfnWebACL.RuleActionProperty(block={}),
+                    statement=wafv2.CfnWebACL.StatementProperty(
+                        rate_based_statement=wafv2.CfnWebACL.RateBasedStatementProperty(
+                            limit=100,
+                            aggregate_key_type="IP"
+                        )
+                    ),
+                    visibility_config=wafv2.CfnWebACL.VisibilityConfigProperty(
+                        cloud_watch_metrics_enabled=True,
+                        metric_name="RateLimit100",
+                        sampled_requests_enabled=True
+                    )
+                )
+            ]
+        )
 
         client_zone = route53.PublicHostedZone(self, "HostedZone",
                                  zone_name="safe-send.net"
@@ -60,10 +90,10 @@ class ClientStack(Stack):
         )
 
         # Certificate (must be in us-east-1)
-        # cert = acm.Certificate(self, "SiteCert",
-        #     domain_name="safe-send.net",
-        #     validation=acm.CertificateValidation.from_dns(client_zone)
-        # )
+        cert = acm.Certificate(self, "SiteCert",
+            domain_name="safe-send.net",
+            validation=acm.CertificateValidation.from_dns(client_zone)
+        )
 
         # Distribution
         distribution = cloudfront.Distribution(
@@ -76,10 +106,11 @@ class ClientStack(Stack):
                 allowed_methods=cloudfront.AllowedMethods.ALLOW_GET_HEAD,
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
             ),
-            # domain_names=["safe-send.net"],
-            # certificate=cert,
+            domain_names=["safe-send.net"],
+            certificate=cert,
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
-            enable_logging=False  # Privacy
+            enable_logging=False,
+            web_acl_id=waf.attr_arn,
         )
 
         # Route53 record
