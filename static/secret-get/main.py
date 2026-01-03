@@ -41,14 +41,14 @@ def lambda_handler(event, context):
 
         table.delete_item(Key={'id': secret_id})
 
-        seconds_now = (datetime.now() - datetime(1970, 1, 1)).total_seconds()
+        seconds_now = int(datetime.now().timestamp())
         seconds_then = response["Item"]["expiresAt"]
 
         if seconds_now > seconds_then:
             return {
                 'statusCode': 404,
                 'headers': {'Content-Type': 'application/json'},
-                'body': json.dumps({'error': str(seconds_now) + " " + str(seconds_then)})
+                'body': json.dumps({'error': messages["missing_expired"]})
             }
 
         return {

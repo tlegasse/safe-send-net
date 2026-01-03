@@ -2,6 +2,7 @@ import os
 from aws_cdk import (
     Aws,
     Stack,
+    Duration,
     RemovalPolicy,
     aws_route53 as route53,
     aws_s3 as s3,
@@ -50,6 +51,19 @@ class ClientStack(Stack):
                     )
                 )
             ]
+        )
+
+        response_headers_policy=cloudfront.ResponseHeadersPolicy(
+            self, "SecurityHeaders",
+            security_headers_behavior=cloudfront.ResponseSecurityHeadersBehavior(
+                content_type_options=cloudfront.ResponseHeadersContentTypeOptions(override=True),
+                frame_options=cloudfront.ResponseHeadersFrameOptions(frame_option=cloudfront.HeadersFrameOption.DENY, override=True),
+                strict_transport_security=cloudfront.ResponseHeadersStrictTransportSecurity(
+                    access_control_max_age=Duration.days(730),
+                    include_subdomains=True,
+                    override=True
+                )
+            )
         )
 
         client_zone = route53.PublicHostedZone(self, "HostedZone",
