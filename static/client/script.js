@@ -1,4 +1,11 @@
-class SafeSend {
+class SafeSendApp {
+    createUrl   = 'https://22erbbnurht77kwkxzmfbkqp240laulz.lambda-url.us-east-1.on.aws/'
+    retrieveUrl = 'https://fz5bva7ou3qhoyuhzsz6km2r5u0dgjet.lambda-url.us-east-1.on.aws/'
+    appState
+    appStateEncrypt = 'encrypt'
+    appStateDecrypt = 'decrypt'
+    secretId
+
     constructor() {
         this.encoder = new TextEncoder("utf-8");
         this.decoder = new TextDecoder("utf-8");
@@ -6,12 +13,44 @@ class SafeSend {
         this.setupElements()
         this.setupEncrpytionVals()
         this.setupListeners()
+        this.retrieveUrlParams()
+        this.setupAppState()
     }
 
     setupElements() {
-        this.userInput = document.getElementById("raw")
-        this.decryptSubmit = document.getElementById("decrypt-submit")
-        this.encrypted = document.getElementById("encrypted")
+        this.appRoot = document.querySelector(".safe-send")
+        this.userInput = document.getElementById("userInput")
+
+        this.expirySelector = document.getElementById("expiry")
+        this.encryptSubmit = document.getElementById("encryptButton")
+        this.shareUrl = document.getElementById("url")
+        this.copyToast = document.getElementById("copyToast")
+
+        this.decryptSubmit = document.getElementById("revealButton")
+        this.decryptMessageContent = document.getElementById("decryptedMessage")
+        this.decryptMessageContainer = document.querySelector(".safe-send__decrypted-message")
+
+        this.resetAppElements = document.querySelectorAll(".reset-app")
+    }
+
+    async setupAppState() {
+        const url = new URL(window.location.href)
+        const params = new URLSearchParams(url.search)
+
+        const id = params.get("id")
+        const rawKey = window.location.hash.replace("#", "")
+        if (id && rawKey) {
+            this.secretId = id
+            this.key = await this.importKey(rawKey)
+        }
+
+        this.appState = id && rawKey ? this.appStateDecrypt : this.appStateEncrypt
+
+        this.appRoot.dataset.state = this.appState
+    }
+
+    retrieveUrlParams() {
+        const url = new URL(window.location)
     }
 
     async setupEncrpytionVals() {
@@ -42,21 +81,56 @@ class SafeSend {
     async triggerEncryption() {
         const payload = this.userInput.value
         const encryptedPayload = await this.getEncryptedPayload(payload)
+        const expiry = this.expirySelector.value
 
-        encrypted.value = JSON.stringify({
-            keyStr: await this.exportKey(),
+        const exportedKey = await this.exportKey()
+
+        const bodyContent = {
             iv: btoa(String.fromCharCode(...this.iv)),
-            payload: encryptedPayload
+            payload: encryptedPayload,
+            expiry: parseInt(expiry)
+        }
+
+        const response = await fetch(this.createUrl, {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: JSON.stringify(bodyContent)
         })
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        const shareUrl = `${window.location.origin}/?id=${result.id}#${exportedKey}`
+        this.shareUrl.innerHTML = shareUrl
+        this.appRoot.classList.add("form-submitted")
     }
 
     async triggerDecryption() {
-        const encryptedStr = encrypted.value
-        const { keyStr, iv: ivBase64, payload } = JSON.parse(encryptedStr)
-        const iv = Uint8Array.from(atob(ivBase64), c => c.charCodeAt(0));
-        this.key = await this.importKey(keyStr)
+        const response = await fetch(`${this.retrieveUrl}/?id=${this.secretId}`)
+        this.appRoot.classList.add("decoded-response-returned")
 
-        console.log(await this.getDecryptedPayload(payload, iv))
+        if (!this.decryptMessageContainer) return
+        this.decryptMessageContainer.classList.add("display")
+
+        if (!response.ok) {
+            this.decryptMessageContainer.dataset.statusCode = response.status
+            this.decryptMessageContainer.classList.add("error")
+
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        const { payload } = result
+        const iv = Uint8Array.from(atob(result.iv), c => c.charCodeAt(0));
+
+        const retrievedMessage = await this.getDecryptedPayload(payload, iv)
+        this.decryptMessageContent.innerHTML = retrievedMessage
     }
 
     async getEncryptedPayload(payload) {
@@ -90,12 +164,42 @@ class SafeSend {
         return this.decoder.decode(arr)
     }
 
+    triggerShareButtonClick() {
+        const visibleClass = "visible"
+
+        navigator.clipboard.writeText(this.shareUrl.innerHTML)
+        this.copyToast.classList.add(visibleClass)
+
+        setTimeout(() => {
+            this.copyToast.classList.remove(visibleClass)
+        }, 1500)
+    }
+
+    resetApp() {
+        this.setupEncrpytionVals()
+
+        this.appRoot.removeAttribute("data-state")
+        this.appRoot.classList.remove("form-submitted")
+        this.appRoot.classList.remove("decoded-response-returned")
+        this.decryptMessageContainer.classList.remove("error")
+        this.decryptMessageContainer.classList.remove("display")
+        this.decryptMessageContainer.removeAttribute("data-status-code")
+    }
+
     setupListeners() {
-        this.userInput.addEventListener("change", () => this.triggerEncryption())
-        this.encrypted.addEventListener("change", () => this.triggerDecryption())
+        this.encryptSubmit.addEventListener("click", () => this.triggerEncryption())
+        this.decryptSubmit.addEventListener("click", () => this.triggerDecryption())
+        this.shareUrl.addEventListener("click", () => this.triggerShareButtonClick())
+
+        for (const ele of this.resetAppElements) {
+            ele.addEventListener("click", () => this.resetApp())
+        }
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    new SafeSend()
+    new SafeSendApp()
+
+    const yearSelector = document.getElementById("year")
+    yearSelector.innerHTML = (new Date).getFullYear()
 })

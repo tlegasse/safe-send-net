@@ -5,9 +5,70 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title></title>
         <script src="./script.js"></script>
+        <link href="./style.css" rel="stylesheet" />
     </head>
     <body>
-        <textarea rows="10" id="raw" placeholder="raw">test</textarea>
-        <textarea rows="10" id="encrypted" placeholder="encrypted"></textarea>
+        <div class="safe-send">
+            <div class="safe-send__encrypt">
+                <div class="safe-send__form form">
+                    <div class="safe-send__form-inner form-inner">
+                        <textarea rows="10" id="userInput" placeholder="Add your text content here."></textarea>
+
+                        <label for="expiry">Time to live</label>
+                        <select id="expiry">
+                            <option value="3600">1hr</option>
+                            <option value="86400">24hrs</option>
+                            <option value="172800">48hrs</option>
+                            <option value="604800">7 days</option>
+                        </select>
+
+                        <button type="submit" id="encryptButton">Save</button>
+                    </div>
+                </div>
+
+                <div class="safe-send__url-share-container">
+                    <p>Done, share this: <span id="url"></span></p>
+                    <button type="submit" class="reset-app">Click here to go back</button>
+                </div>
+            </div>
+            <div class="safe-send__decrypt">
+                <div class="safe-send__reveal">
+                    <div class="safe-send__reveal-inner">
+                        <p>Click here to reveal your secret.</p>
+                        <button type="submit" id="revealButton">Retrieve</button>
+                    </div>
+                </div>
+
+                <div class="safe-send__decrypted-message">
+                    <div class="decrypted-message__success">
+                        <p>Your message:</p>
+                        <p id="decryptedMessage"></p>
+                    </div>
+                    <div class="decrypted-message__failure">
+                        <div class="decrypted-message__failure-message decrypted-message__failure-404">
+                            <p>There was an error locating your secret. Either it's been accessed before or it has expired.</p>
+                        </div>
+                        <div class="decrypted-message__failure-message decrypted-message__failure-500">
+                            <p>There was a server error. Please try again some other time.</p>
+                        </div>
+                        <div class="decrypted-message__failure-message decrypted-message__failure-other">
+                            <p>There was an unknown error retrieving your secret.</p>
+                        </div>
+
+                        <button type="submit" class="reset-app">Click here to go back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="body-content" style="display: none;">
+            <h3>Zero, as in <i>prying eyes</i>.</h3>
+            <p>Zero analytics</p>
+            <p>Zero tracking</p>
+            <p>Zero user specific log</p>
+        </div>
+        <div id="copyToast"><p>Url copied!</p></div>
     </body>
+    <footer style="display: none;">
+        <p>Copyright (c) <span id="year"></span> Safe Send. All Rights Reserved.</p>
+    </footer>
 </html>
