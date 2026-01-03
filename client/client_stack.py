@@ -102,7 +102,7 @@ class ClientStack(Stack):
                 content_type_options=cloudfront.ResponseHeadersContentTypeOptions(override=True),
                 frame_options=cloudfront.ResponseHeadersFrameOptions(frame_option=cloudfront.HeadersFrameOption.DENY, override=True),
                 content_security_policy=cloudfront.ResponseHeadersContentSecurityPolicy(
-                    content_security_policy="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+                    content_security_policy="script-src 'self'; style-src 'self' 'unsafe-inline'",
                     override=True
                 ),
                 strict_transport_security=cloudfront.ResponseHeadersStrictTransportSecurity(
