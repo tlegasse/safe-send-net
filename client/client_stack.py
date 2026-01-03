@@ -16,10 +16,6 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-
-# [WARNING] aws-cdk-lib.aws_cloudfront_origins.S3Origin is deprecated.
-#   Use `S3BucketOrigin` or `S3StaticWebsiteOrigin` instead.
-
 class ClientStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -125,6 +121,16 @@ class ClientStack(Stack):
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
             enable_logging=False,
             web_acl_id=waf.attr_arn,
+        )
+
+        response_headers_policy = cloudfront.ResponseHeadersPolicy(
+            self, "SecurityHeaders",
+            security_headers_behavior=cloudfront.ResponseSecurityHeadersBehavior(
+                content_security_policy=cloudfront.ResponseHeadersContentSecurityPolicy(
+                    content_security_policy="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+                    override=True
+                )
+            )
         )
 
         # Route53 record

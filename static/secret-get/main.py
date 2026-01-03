@@ -1,19 +1,18 @@
 import os
 import json
-import logging
 import boto3
 from datetime import datetime
 
+messages = {
+    "missing_expired": "missing_expired",
+    "missing_id": "missing_id",
+    "general_exception": "general_exception"
+}
+
 dynamodb = boto3.resource('dynamodb')
-logger = logging.getLogger()
-logger.setLevel("INFO")
 
 def lambda_handler(event, context):
     try:
-        messages = {
-            "missing_expired": "missing_expired",
-            "missing_id": "missing_id",
-        }
         # Get ID from path or query string
         secret_id = event.get('queryStringParameters', {}).get('id')
 
@@ -61,8 +60,7 @@ def lambda_handler(event, context):
         }
 
     except Exception as e:
-        logger.error(f"Error: {str(e)}")
         return {
             'statusCode': 500,
-            'body': json.dumps({'error': str(e)})
+            'body': json.dumps({'error': messages["general_exception"]})
         }

@@ -1,6 +1,5 @@
 import os
 import json
-import logging
 import boto3
 import base64
 from datetime import datetime, timedelta
@@ -16,10 +15,6 @@ allowed_intervals = [
     172800,
     604800
 ]
-
-# Initialize the logger
-logger = logging.getLogger()
-logger.setLevel("INFO")
 
 def is_base64_encoded(payload):
     try:
@@ -72,7 +67,6 @@ def lambda_handler(event, context):
         }
 
     except Exception as e:
-        logger.error(f"Error: {str(e)}")
         return {
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
