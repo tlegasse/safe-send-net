@@ -11,10 +11,14 @@ class SafeSendApp {
         this.decoder = new TextDecoder("utf-8");
 
         this.setupElements()
-        this.setupEncrpytionVals()
+        this.init()
+    }
+
+    async init() {
+        await this.setupEncryptionVals()
         this.setupListeners()
         this.retrieveUrlParams()
-        this.setupAppState()
+        await this.setupAppState()
     }
 
     setupElements() {
@@ -53,7 +57,7 @@ class SafeSendApp {
         const url = new URL(window.location)
     }
 
-    async setupEncrpytionVals() {
+    async setupEncryptionVals() {
         this.iv = window.crypto.getRandomValues(new Uint8Array(12));
         this.key = await window.crypto.subtle.generateKey(
             { name: "AES-GCM", length: 256 },
@@ -71,7 +75,7 @@ class SafeSendApp {
         const raw = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
         return await window.crypto.subtle.importKey(
             "raw",
-            raw,
+            raw.buffer,
             "AES-GCM",
             false,
             ["decrypt"]
@@ -157,7 +161,7 @@ class SafeSendApp {
                 iv
             },
             this.key,
-            payload.buffer
+            payload.buffer.slice(payload.byteOffset, payload.byteOffset + payload.byteLength)
         );
 
         const arr = new Uint8Array(decrypted)
@@ -175,8 +179,8 @@ class SafeSendApp {
         }, 1500)
     }
 
-    resetApp() {
-        this.setupEncrpytionVals()
+    async resetApp() {
+        await this.setupEncryptionVals()
 
         this.appRoot.removeAttribute("data-state")
         this.appRoot.classList.remove("form-submitted")
