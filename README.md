@@ -1,22 +1,37 @@
-# Introduction
-This projects comprises 2 CDK stacks:
-- `server` - Provides provisions for the lambda functions and DB server powering the experienc.
-- `client` - Provides provisions for the client application, A.K.A. the website.
+# Safe Send
+A privacy first, second and third secrets sharing application.
 
-The front-end is responsible for all encryption.
-Only the payload (encrypted) and iv value are sent to the server, as well as the wait value in seconds.
-An example encrypted string would look like so:
-```
-{
-  "keyStr": "OgjxY9l9RE19uAN4VQ/5iRhSOebyhUcPdRI5gkrYJAY=",
-  "iv": "TUDoeRVf2YGA2WhS",
-  "payload": "0TMqVRymzYuJr+kPHsbZWRNZ62Q9eInY"
-}
-```
+## Why?
+This is the real world, if the general user perceives even slight friction in following security protocol sharing sensetive data, it's going in an email in plain text.
+It happens constantly, and especially now, data leaks happen constantly, and prying eyes are always on us. Enter Safe Send, my take on an essential security practice, snappy and secure secrets sharing.
+To provide a secure environment, the following features are provided:
+- A zero trust means of sharing potentially secure data.
+- Secret deletion upon access or expiry.
+- No production logging.
+- Scalable AWS hosting.
 
-# Static content
-Some content, such as lambda function code and the front-end app are served statically.
-They live in the `static` directory
+## How?
+This projects leverages CDK to implement an infrastructure as a service hosting platofrm.
+It comprises the following Cloud Formation stacks
 
-ServerStack.GetSecretUrl = https://fz5bva7ou3qhoyuhzsz6km2r5u0dgjet.lambda-url.us-east-1.on.aws/
-ServerStack.PutSecretUrl = https://22erbbnurht77kwkxzmfbkqp240laulz.lambda-url.us-east-1.on.aws/
+### Client
+An S3 hosted, cloudfront distributed website.
+All encryption is performed by native browser SubtleCrypt API's.
+Secrets are passed to the server after encryption with an expiry time.
+After encrypted data is stored, a sharable URL containing both the secret's UUID and a secret key stored after the URL hash.
+Accessing the URL with the UUID and key present presents the user the ability to recall the secret (if still live) and decrypt.
+
+### Server
+There are two hosted functions corresponding to read and write actions.
+
+#### `secrets-create`
+Validates and stores secrets.
+
+#### `secrets-get`
+Retrieves, validates and destroys stored functions.
+
+## License
+Source code is available for review and security auditing purposes only.
+No license is granted for use, modification, distribution or deployment.
+
+This is intended to change in the future as the project matures.
