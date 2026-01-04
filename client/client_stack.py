@@ -35,18 +35,18 @@ class ClientStack(Stack):
             ),
             rules=[
                 wafv2.CfnWebACL.RuleProperty(
-                    name="RateLimit100",
+                    name="RateLimit1000",
                     priority=1,
                     action=wafv2.CfnWebACL.RuleActionProperty(block={}),
                     statement=wafv2.CfnWebACL.StatementProperty(
                         rate_based_statement=wafv2.CfnWebACL.RateBasedStatementProperty(
-                            limit=100,
+                            limit=1000,
                             aggregate_key_type="IP"
                         )
                     ),
                     visibility_config=wafv2.CfnWebACL.VisibilityConfigProperty(
                         cloud_watch_metrics_enabled=True,
-                        metric_name="RateLimit100",
+                        metric_name="RateLimit1000",
                         sampled_requests_enabled=True
                     )
                 )
