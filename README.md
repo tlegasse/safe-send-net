@@ -2,7 +2,7 @@
 A privacy first, second and third secrets sharing application.
 
 ## Why?
-This is the real world, if the general user perceives even slight friction in following security protocol sharing sensetive data, it's going in an email in plain text.
+This is the real world, if the general user perceives even slight friction in following security protocol sharing sensitive data, it's going in an email in plain text.
 It happens constantly, and especially now, data leaks happen constantly, and prying eyes are always on us. Enter Safe Send, my take on an essential privacy workflow, snappy and secure secrets sharing.
 To provide a secure environment, the following features are provided:
 - A zero trust means of sharing potentially secure data.
@@ -11,12 +11,12 @@ To provide a secure environment, the following features are provided:
 - Scalable AWS hosting.
 
 ## How?
-This projects leverages CDK to implement an infrastructure as a service hosting platofrm.
+This projects leverages CDK to implement an infrastructure as a service hosting platform.
 It comprises the following Cloud Formation stacks
 
 ### Client
-An S3 hosted, cloudfront distributed website.
-All encryption is performed by native browser SubtleCrypt API's.
+An S3 hosted, CloudFront distributed website.
+All encryption is performed by native browser SubtleCrypto API's.
 Secrets are passed to the server after encryption with an expiry time.
 After encrypted data is stored, a sharable URL containing both the secret's UUID and a secret key stored after the URL hash.
 Accessing the URL with the UUID and key present presents the user the ability to recall the secret (if still live) and decrypt.
