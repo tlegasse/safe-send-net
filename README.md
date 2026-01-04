@@ -1,4 +1,4 @@
-# Safe Send
+# safe-send.net
 A privacy first, second and third secrets sharing application.
 
 ## Why?
