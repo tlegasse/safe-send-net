@@ -3,7 +3,7 @@ A privacy first, second and third secrets sharing application.
 
 ## Why?
 This is the real world, if the general user perceives even slight friction in following security protocol sharing sensetive data, it's going in an email in plain text.
-It happens constantly, and especially now, data leaks happen constantly, and prying eyes are always on us. Enter Safe Send, my take on an essential security practice, snappy and secure secrets sharing.
+It happens constantly, and especially now, data leaks happen constantly, and prying eyes are always on us. Enter Safe Send, my take on an essential privacy workflow, snappy and secure secrets sharing.
 To provide a secure environment, the following features are provided:
 - A zero trust means of sharing potentially secure data.
 - Secret deletion upon access or expiry.
