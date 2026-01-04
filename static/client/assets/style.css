@@ -1,0 +1,225 @@
+/*
+* CSS Fontface declarations
+*/
+@font-face {
+  font-family: mplus;
+  src: url("/assets/mplus-regular.ttf") format('truetype'),
+       url("/assets/mplus-regular.woff2") format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: mplus;
+  src: url("/assets/mplus-regular.ttf") format('truetype'),
+       url("/assets/mplus-regular.woff2") format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+
+@font-face {
+  font-family: mplus;
+  src: url("/assets/mplus-bold.ttf") format('truetype'),
+       url("/assets/mplus-bold.woff2") format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: mplus;
+  src: url("/assets/mplus-bold.ttf") format('truetype'),
+       url("/assets/mplus-bold.woff2") format('woff2');
+  font-weight: 700;
+  font-style: italic;
+}
+
+
+@font-face {
+  font-family: mplus;
+  src: url("/assets/mplus-black.ttf") format('truetype'),
+       url("/assets/mplus-black.woff2") format('woff2');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: mplus;
+  src: url("/assets/mplus-black.ttf") format('truetype'),
+       url("/assets/mplus-black.woff2") format('woff2');
+  font-weight: 900;
+  font-style: italic;
+}
+
+
+/*
+ * App state display toggles
+ */
+
+.safe-send__encrypt,
+.safe-send__decrypt,
+.safe-send__url-share-container {
+  display: none;
+}
+
+.safe-send[data-state="decrypt"] .safe-send__decrypt {
+  display: block;
+}
+
+.safe-send:not([data-state="decrypt"]) .safe-send__encrypt {
+  display: block;
+}
+
+.safe-send.form-submitted .safe-send__url-share-container {
+  display: block;
+}
+
+#copyToast:not(.visible) {
+  display: none;
+}
+
+.safe-send:not(.decoded-response-returned) .decrypted-message__failure,
+.safe-send:not(.decoded-response-returned) .decrypted-message__success {
+  display: none;
+}
+
+
+.safe-send__decrypted-message:not(.error) .decrypted-message__failure {
+  display: none;
+}
+
+.safe-send__decrypted-message.error .decrypted-message__success {
+  display: none;
+}
+
+.decrypted-message__failure-message {
+  display: none;
+}
+
+.safe-send__decrypted-message[data-status-code="404"] .decrypted-message__failure-404 {
+  display: block;
+}
+
+.safe-send__decrypted-message[data-status-code="500"] .decrypted-message__failure-500 {
+  display: block;
+}
+
+.safe-send__decrypted-message:not([data-status-code="404"]):not([data-status-code="500"]) .decrypted-message__failure-other {
+  display: none;
+}
+
+.safe-send.decoded-response-returned .safe-send__reveal {
+  display: none;
+}
+
+
+/*
+ * CSS Vars
+ */
+
+:root {
+  /* colors */
+  --bg-light:     #EBE9E9;
+  --bg-medium:    #D8D4D4;
+  --bg-dark:      #4B4444;
+
+  --text-bold:    #4B4444;
+
+  --success-bg:   #3581B8;
+  --success-fg:   #EBE9E9;
+
+  --error-fg:     #EBE9E9;
+  --error-bg:     #EE4266;
+
+  --footer-fg:    #EBE9E9;
+  --footer-bg:    #2A1E5C;
+
+  /* sizes */
+  --border-radius: 0.5rem;
+}
+
+
+/*
+ * General styling
+ */
+
+html {
+  min-height: 100vh;
+}
+
+body {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 900;
+}
+
+h1 {
+  font-size: 3.5rem;
+  margin-bottom: 2.5rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+p {
+  margin-bottom: 0.8rem;
+}
+
+i {
+  font-style: italic;
+}
+
+.page-width {
+  max-width: 115rem;
+  margin: 0 auto;
+  display: block;
+  padding: 0 2.5rem;
+}
+
+.safe-send {
+  display: inline-block;
+}
+
+#copyToast {
+    width: max-content;
+    display: inline-block;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 100%);
+    padding: 1rem 2.5rem 1.25rem;
+    font-weight: 900;
+    font-size: 2.2rem;
+    background: var(--success-bg);
+    color: var(--success-fg);
+    border-radius: var(--border-radius);
+    pointer-events: none;
+    z-index: 999;
+}
+
+textarea {
+  background-color: var(--bg-medium);
+  padding: 1rem;
+  line-height: 1.15rem;
+}
+
+.footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-fg);
+  position: sticky;
+  top: 100%;
+  padding: 2.5rem 0;
+}
+
+.footer__copyright {
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+.safe-send__inner > * {
+  margin: 2.5rem 0;
+}
