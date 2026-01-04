@@ -27,28 +27,32 @@ class ServerStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
-        get_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "secret_get_secrets_lambda_function",
-                                                                    # reserved_concurrent_executions=5,
-                                                                    log_retention=None,
-                                                                    runtime=aws_lambda.Runtime.PYTHON_3_13,
-                                                                    entry=os.path.join(project_root, "static", "secret-get"),
-                                                                    index="main.py",
-                                                                    handler="lambda_handler",
-                                                                    )
+        get_secrets_lambda = aws_lambda_python_alpha.PythonFunction(
+            self,
+            "secret_get_secrets_lambda_function",
+            reserved_concurrent_executions=10,
+            log_retention=None,
+            runtime=aws_lambda.Runtime.PYTHON_3_13,
+            entry=os.path.join(project_root, "static", "secret-get"),
+            index="main.py",
+            handler="lambda_handler",
+        )
 
         get_secrets_lambda.add_environment("TABLE_NAME", secrets_table.table_name)
 
         secrets_table.grant_write_data(get_secrets_lambda)
         secrets_table.grant_read_data(get_secrets_lambda)
 
-        create_secrets_lambda = aws_lambda_python_alpha.PythonFunction(self, "create_secrets_lambda_function",
-                                                                    # reserved_concurrent_executions=5,
-                                                                    log_retention=None,
-                                                                    runtime=aws_lambda.Runtime.PYTHON_3_13,
-                                                                    entry=os.path.join(project_root, "static", "secret-create"),
-                                                                    index="main.py",
-                                                                    handler="lambda_handler",
-                                                                    )
+        create_secrets_lambda = aws_lambda_python_alpha.PythonFunction(
+            self,
+            "create_secrets_lambda_function",
+            reserved_concurrent_executions=10,
+            log_retention=None,
+            runtime=aws_lambda.Runtime.PYTHON_3_13,
+            entry=os.path.join(project_root, "static", "secret-create"),
+            index="main.py",
+            handler="lambda_handler",
+        )
 
         secrets_table.grant_write_data(create_secrets_lambda)
 

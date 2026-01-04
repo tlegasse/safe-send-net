@@ -67,16 +67,6 @@ class ClientStack(Stack):
         stack_dir = os.path.dirname(__file__)
         project_root = os.path.dirname(stack_dir)
 
-        deployment = s3deploy.BucketDeployment(
-            self,
-            "client_bucket_deployment",
-            sources=[
-                s3deploy.Source.asset(
-                    os.path.join(project_root, "static", "client")
-                )
-            ],
-            destination_bucket=client_site_bucket
-        )
 
         origin_access_identity = cloudfront.OriginAccessIdentity(
             self,
@@ -135,6 +125,19 @@ class ClientStack(Stack):
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
             enable_logging=False,
             web_acl_id=waf.attr_arn,
+        )
+
+        deployment = s3deploy.BucketDeployment(
+            self,
+            "client_bucket_deployment",
+            sources=[
+                s3deploy.Source.asset(
+                    os.path.join(project_root, "static", "client")
+                )
+            ],
+            destination_bucket=client_site_bucket,
+            distribution=distribution,
+            distribution_paths=["/*"]
         )
 
         # Route53 record
