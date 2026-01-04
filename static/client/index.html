@@ -9,10 +9,13 @@
         <link href="/assets/style.css" rel="stylesheet" />
     </head>
     <body>
+        <h1 class="visually-hidden">Safe Send</h1>
+
         <div class="safe-send">
             <div class="safe-send__inner page-width">
                 <div class="safe-send__intro">
-                    <h1>Safe Send</h1>
+                    <a class="safe-send__intro-heading" href="https://safe-send.net">Safe Send</a>
+                    <p>Secrets deleted as accessed or expired. Privacy for real</p>
                 </div>
                 <div class="safe-send__encrypt">
                     <div class="safe-send__form form">
@@ -32,7 +35,8 @@
                     </div>
 
                     <div class="safe-send__url-share-container">
-                        <p>Done, share this: <span id="url"></span></p>
+                        <p>Your secret is safe with me. Please share this link:</p>
+                        <p><span id="url"></span></p>
                         <button type="submit" class="reset-app">Click here to go back</button>
                     </div>
                 </div>
@@ -67,11 +71,49 @@
                     </div>
                 </div>
 
+                <hr>
+
                 <div class="body-content">
                     <h2>Zero... as in <i>prying eyes</i>.</h2>
-                    <p>Zero analytics</p>
-                    <p>Zero tracking</p>
-                    <p>Zero user specific log</p>
+                    <p><strong><i>Zero</i> analytics</strong></p>
+                    <p><strong><i>Zero</i> tracking</strong></p>
+                    <p><strong><i>Zero</i> user specific logging</strong></p>
+                </div>
+
+                <div class="body-content">
+                    <details>
+                        <summary>
+                            <h2>How does it work?</h2>
+                        </summary>
+                        <disclosrue>
+                            <p>Place your content in the box above.</p>
+                            <p>Select an expiration time, from 1 hour to 7 days.</p>
+                            <p>Copy and share the link</p>
+                        </disclosrue>
+                    </details>
+                </div>
+
+                <div class="body-content">
+                    <details>
+                        <summary>
+                            <h2>How is it safe if the app stores it?</h2>
+                        </summary>
+                        <disclosrue>
+                            <p>The data you provide is encrypted on <i>your</i> device, you keep the keys to the castle, and the only data the app stores is un-encryptable data.</p>
+                            <p>The link you recieve back, conveniently and securely, contains a secure key that only you know.</p>
+                        </disclosrue>
+                    </details>
+                </div>
+
+                <div class="body-content">
+                    <details>
+                        <summary>
+                            <h2>How can I be sure it's secure?</h2>
+                        </summary>
+                        <disclosrue>
+                            <p>The source code for this application is provided <a target="_blank" href="https://github.com/tlegasse/safe-send-net">at the link here</a>. Nothing hidden, nothing obscured.</p>
+                        </disclosrue>
+                    </details>
                 </div>
             </div>
         </div>

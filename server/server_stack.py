@@ -62,8 +62,8 @@ class ServerStack(Stack):
         put_url = create_secrets_lambda.add_function_url(
             auth_type=aws_lambda.FunctionUrlAuthType.NONE,
             cors=aws_lambda.FunctionUrlCorsOptions(
-                allowed_origins=["https://safe-send.net"],
-                # allowed_origins=["*"],
+                # allowed_origins=["https://safe-send.net"],
+                allowed_origins=["*"],
                 allowed_methods=[aws_lambda.HttpMethod.PUT]
             )
         )
