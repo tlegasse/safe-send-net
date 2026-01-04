@@ -113,7 +113,7 @@
   --error-fg:     #EBE9E9;
   --error-bg:     #EE4266;
 
-  --footer-fg:    #EBE9E9;
+  --footer-fg:    #ffffff;
   --footer-bg:    #2A1E5C;
 
   --dark-fg:      #464646;
@@ -208,6 +208,7 @@ summary {
 disclosure {
   padding-left: 2rem;
   display: block;
+  margin-bottom: 5rem;
 }
 
 details h2 {
@@ -239,7 +240,6 @@ details h2 {
   font-weight: 900;
   font-size: 2.2rem;
   background: var(--success-bg);
-  color: var(--success-fg);
   border-radius: var(--border-radius);
   box-shadow: 0 0 0 0.5rem var(--color-white);
   pointer-events: none;
@@ -247,26 +247,34 @@ details h2 {
   transition-duration: var(--transition-standard);
 }
 
+#copyToast p {
+  color: var(--success-fg);
+  margin-bottom: 0;
+}
+
 strong {
   font-weight: 700;
 }
 
 .footer {
-  background-color: var(--footer-bg);
-  color: var(--footer-fg);
+  background-color: var(--error-bg);
   position: sticky;
   top: 100%;
-  padding: 2.5rem 0;
+  padding: 5rem 0;
 }
 
 .footer__copyright {
   font-weight: 700;
-  opacity: 0.75;
 }
 
 .footer__copyright p {
-  color: var(--color-white);
+  color: var(--error-fg);
   margin-bottom: 0;
+  text-align: center;
+}
+
+.footer__copyright a {
+  color: var(--error-fg);
 }
 
 .safe-send__inner > * {
@@ -276,8 +284,6 @@ strong {
 #url {
   background-color: var(--copy-bg);
   color: var(--copy-fg);
-  background-color: var(--copy-bg);
-  color: var(--copy-fg);
   border-radius: 0.5rem;
   overflow: hidden;
   padding: 0 0.5rem;
@@ -285,6 +291,14 @@ strong {
   text-decoration-style: dotted;
   text-underline-offset: 3px;
   cursor: pointer;
+}
+
+#decryptedMessage {
+  background-color: var(--copy-bg);
+  color: var(--copy-fg);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  padding: 0 0.5rem;
 }
 
 .visually-hidden {
@@ -312,4 +326,8 @@ strong {
 .body-content + .body-content {
   margin-top: 2.5rem;
   margin-bottom: 2.5rem;
+}
+
+.safe-send__url-share-container button {
+  margin-top: 4.2rem;
 }

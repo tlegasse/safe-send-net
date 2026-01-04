@@ -83,6 +83,7 @@ class ClientStack(Stack):
         # Certificate (must be in us-east-1)
         cert = acm.Certificate(self, "SiteCert",
             domain_name="safe-send.net",
+            subject_alternative_names=["www.safe-send.net"],
             validation=acm.CertificateValidation.from_dns(client_zone)
         )
 
@@ -120,7 +121,7 @@ class ClientStack(Stack):
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 response_headers_policy=response_headers_policy
             ),
-            domain_names=["safe-send.net"],
+            domain_names=["safe-send.net", "www.safe-send.net"],
             certificate=cert,
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
             enable_logging=False,
@@ -146,6 +147,12 @@ class ClientStack(Stack):
             target=route53.RecordTarget.from_alias(
                 route53_targets.CloudFrontTarget(distribution) # type: ignore
             )
+        )
+
+        route53.CnameRecord(self, "WwwAliasRecord",
+            zone=client_zone,
+            record_name="www",
+            domain_name=distribution.distribution_domain_name
         )
 
         client_site_output = CfnOutput(
