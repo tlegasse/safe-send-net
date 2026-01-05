@@ -107,7 +107,7 @@
   --copy-bg:      #ccf2ce;
   --copy-fg:      #4B4444;
 
-  --success-bg:   #3581B8;
+  --success-bg:   #2A1E5C;
   --success-fg:   #EBE9E9;
 
   --error-fg:     #EBE9E9;
@@ -172,7 +172,7 @@ select {
 }
 
 textarea {
-  background-color: var(--bg-light);
+  box-shadow: 0 0 0px 3px var(--bg-light);
   padding: 2.5rem;
   line-height: 1.15rem;
   border-radius: var(--border-radius);
@@ -183,6 +183,7 @@ textarea {
 
 button {
   border: none;
+  padding: 0.25rem 1.5rem;
   background: var(--success-bg);
   font-weight: 700;
   color: var(--color-white);
@@ -328,6 +329,12 @@ strong {
   margin-bottom: 2.5rem;
 }
 
-.safe-send__url-share-container button {
+#revealButton {
+  margin-top: 2.5rem;
+}
+
+.decrypted-message__failure button,
+.safe-send__url-share-container button,
+.decrypted-message__success button {
   margin-top: 4.2rem;
 }
