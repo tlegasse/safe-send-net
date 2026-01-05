@@ -7,38 +7,38 @@
         <link href="/assets/reset.css" rel="stylesheet" />
         <link href="/assets/style.css" rel="stylesheet" />
 
-        <title>Safe Send - Zero-Knowledge Secret Sharing</title>
+        <title>Seen Once - Zero-Knowledge Secret Sharing</title>
 
         <meta name="description" content="Share secrets securely. Client-side encryption, self-destructing links, zero logs. Privacy for real.">
-        <meta property="og:title" content="Safe Send - Zero-Knowledge Secret Sharing">
+        <meta property="og:title" content="Seen Once - Zero-Knowledge Secret Sharing">
         <meta property="og:description" content="Share secrets securely with client-side encryption and self-destructing links.">
-        <meta property="og:image" content="https://safe-send.net/assets/og-image.png">
-        <meta property="og:url" content="https://safe-send.net">
+        <meta property="og:image" content="https://seen-once.com/assets/og-image.png">
+        <meta property="og:url" content="https://seen-once.com">
         <meta name="twitter:card" content="summary_large_image">
 
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
                 "@type": "WebApplication",
-                "name": "Safe Send",
+                "name": "Seen Once",
                 "description": "Zero-knowledge secret sharing with client-side encryption",
-                "url": "https://safe-send.net",
+                "url": "https://seen-once.com",
                 "applicationCategory": "SecurityApplication"
             }
         </script>
     </head>
     <body>
-        <h1 class="visually-hidden">Safe Send - Zero-Knowledge Secret Sharing</h1>
+        <h1 class="visually-hidden">Seen Once - Zero-Knowledge Secret Sharing</h1>
 
-        <div class="safe-send">
-            <div class="safe-send__inner page-width">
-                <div class="safe-send__intro">
-                    <a class="safe-send__intro-heading" href="https://safe-send.net">Safe Send</a>
+        <div class="seen-once">
+            <div class="seen-once__inner page-width">
+                <div class="seen-once__intro">
+                    <a class="seen-once__intro-heading" href="https://seen-once.com">Seen Once</a>
                     <p>Zero-Knowledge Secret Sharing</p>
                 </div>
-                <div class="safe-send__encrypt">
-                    <div class="safe-send__form form">
-                        <div class="safe-send__form-inner form-inner">
+                <div class="seen-once__encrypt">
+                    <div class="seen-once__form form">
+                        <div class="seen-once__form-inner form-inner">
                             <textarea rows="10" id="userInput" placeholder="Add your text content here."></textarea>
 
                             <label for="expiry">Time to live</label>
@@ -53,21 +53,21 @@
                         </div>
                     </div>
 
-                    <div class="safe-send__url-share-container">
+                    <div class="seen-once__url-share-container">
                         <p>Your secret is safe with me. Please share this link. Clicking it will copy to clipboard:</p>
                         <p><span id="url"></span></p>
                         <button type="submit" class="reset-app">Click here to start over</button>
                     </div>
                 </div>
-                <div class="safe-send__decrypt">
-                    <div class="safe-send__reveal">
-                        <div class="safe-send__reveal-inner">
+                <div class="seen-once__decrypt">
+                    <div class="seen-once__reveal">
+                        <div class="seen-once__reveal-inner">
                             <p>Click here to reveal your secret.</p>
                             <button type="submit" id="revealButton">Retrieve</button>
                         </div>
                     </div>
 
-                    <div class="safe-send__decrypted-message">
+                    <div class="seen-once__decrypted-message">
                         <div class="decrypted-message__success">
                             <p>Your message:</p>
                             <p id="decryptedMessage"></p>
@@ -130,7 +130,7 @@
                             <h2>How can I be sure it's secure?</h2>
                         </summary>
                         <disclosure>
-                            <p>The source code for this application is provided <a target="_blank" href="https://github.com/tlegasse/safe-send-net">at the link here</a>. Nothing hidden, nothing obscured.</p>
+                            <p>The source code for this application is provided <a target="_blank" href="https://github.com/tlegasse/seen-once">at the link here</a>. Nothing hidden, nothing obscured.</p>
                         </disclosure>
                     </details>
                 </div>
@@ -140,11 +140,11 @@
         <div id="copyToast"><p>URL copied!</p></div>
 
         <div class="footer">
-            <div class="safe-send__footer page-width">
+            <div class="seen-once__footer page-width">
                 <div class="footer__copyright">
                     <p>If you find this tool useful, <a target="_blank" href="https://github.com/sponsors/tlegasse">please consider sponsoring this project.</a></p>
                     <br>
-                    <p>©<span id="year"></span>, Safe Send - All Rights Reserved - <a href="mailto:tanner@legasse.dev">Contact me here</a> - <a target="_blank" href="https://github.com/tlegasse/safe-send-net">Source here</a></p>
+                    <p>©<span id="year"></span>, Seen Once - All Rights Reserved - <a href="mailto:tanner@legasse.dev">Contact me here</a> - <a target="_blank" href="https://github.com/tlegasse/seen-once">Source here</a></p>
                 </div>
             </div>
         </div>

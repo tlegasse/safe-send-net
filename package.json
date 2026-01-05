@@ -1,5 +1,5 @@
 {
-  "name": "safe-send-net",
+  "name": "seen-once",
   "version": "0.0.1",
   "description": "A privacy first, second and third secrets sharing application.",
   "main": "index.js",
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tlegasse/safe-send-net.git"
+    "url": "git+https://github.com/tlegasse/seen-once.git"
   },
   "keywords": [],
   "author": "Tanner Legasse",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/tlegasse/safe-send-net/issues"
+    "url": "https://github.com/tlegasse/seen-once/issues"
   },
-  "homepage": "https://github.com/tlegasse/safe-send-net#readme",
+  "homepage": "https://github.com/tlegasse/seen-once#readme",
   "dependencies": {
     "http-server": "^14.1.1"
   }

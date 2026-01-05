@@ -1,4 +1,4 @@
-class SafeSendApp {
+class SeenOnceApp {
     createUrl   = 'https://22erbbnurht77kwkxzmfbkqp240laulz.lambda-url.us-east-1.on.aws/'
     retrieveUrl = 'https://fz5bva7ou3qhoyuhzsz6km2r5u0dgjet.lambda-url.us-east-1.on.aws/'
     appState
@@ -22,7 +22,7 @@ class SafeSendApp {
     }
 
     setupElements() {
-        this.appRoot = document.querySelector(".safe-send")
+        this.appRoot = document.querySelector(".seen-once")
         this.userInput = document.getElementById("userInput")
 
         this.expirySelector = document.getElementById("expiry")
@@ -32,7 +32,7 @@ class SafeSendApp {
 
         this.decryptSubmit = document.getElementById("revealButton")
         this.decryptMessageContent = document.getElementById("decryptedMessage")
-        this.decryptMessageContainer = document.querySelector(".safe-send__decrypted-message")
+        this.decryptMessageContainer = document.querySelector(".seen-once__decrypted-message")
 
         this.resetAppElements = document.querySelectorAll(".reset-app")
     }
@@ -202,7 +202,7 @@ class SafeSendApp {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    new SafeSendApp()
+    new SeenOnceApp()
 
     const yearSelector = document.getElementById("year")
     yearSelector.innerHTML = (new Date).getFullYear()

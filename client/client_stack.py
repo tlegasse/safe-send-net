@@ -27,7 +27,7 @@ class ClientStack(Stack):
             scope="CLOUDFRONT",
             visibility_config=wafv2.CfnWebACL.VisibilityConfigProperty(
                 cloud_watch_metrics_enabled=True,
-                metric_name="safe-send-waf",
+                metric_name="seen-once-waf",
                 sampled_requests_enabled=True
             ),
             rules=[
@@ -51,7 +51,7 @@ class ClientStack(Stack):
         )
 
         client_zone = route53.PublicHostedZone(self, "HostedZone",
-                                 zone_name="safe-send.net"
+                                 zone_name="seen-once.com"
                                  )
 
         client_site_bucket = s3.Bucket(
@@ -77,8 +77,8 @@ class ClientStack(Stack):
         )
 
         cert = acm.Certificate(self, "SiteCert",
-            domain_name="safe-send.net",
-            subject_alternative_names=["www.safe-send.net"],
+            domain_name="seen-once.com",
+            subject_alternative_names=["www.seen-once.com"],
             validation=acm.CertificateValidation.from_dns(client_zone)
         )
 
@@ -116,7 +116,7 @@ class ClientStack(Stack):
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 response_headers_policy=response_headers_policy
             ),
-            domain_names=["safe-send.net"],
+            domain_names=["seen-once.com"],
             certificate=cert,
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
             enable_logging=False,
@@ -137,8 +137,8 @@ class ClientStack(Stack):
         )
 
         route53_patterns.HttpsRedirect(self, "WwwRedirect",
-            record_names=["www.safe-send.net"],
-            target_domain="safe-send.net",
+            record_names=["www.seen-once.com"],
+            target_domain="seen-once.com",
             zone=client_zone
         )
 

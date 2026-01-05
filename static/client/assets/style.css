@@ -30,21 +30,21 @@
 * App state display toggles
 */
 
-.safe-send__encrypt,
-.safe-send__decrypt,
-.safe-send__url-share-container {
+.seen-once__encrypt,
+.seen-once__decrypt,
+.seen-once__url-share-container {
   display: none;
 }
 
-.safe-send[data-state="decrypt"] .safe-send__decrypt {
+.seen-once[data-state="decrypt"] .seen-once__decrypt {
   display: block;
 }
 
-.safe-send:not([data-state="decrypt"]) .safe-send__encrypt {
+.seen-once:not([data-state="decrypt"]) .seen-once__encrypt {
   display: block;
 }
 
-.safe-send.form-submitted .safe-send__url-share-container {
+.seen-once.form-submitted .seen-once__url-share-container {
   display: block;
 }
 
@@ -52,17 +52,17 @@
   opacity: 0;
 }
 
-.safe-send:not(.decoded-response-returned) .decrypted-message__failure,
-.safe-send:not(.decoded-response-returned) .decrypted-message__success {
+.seen-once:not(.decoded-response-returned) .decrypted-message__failure,
+.seen-once:not(.decoded-response-returned) .decrypted-message__success {
   display: none;
 }
 
 
-.safe-send__decrypted-message:not(.error) .decrypted-message__failure {
+.seen-once__decrypted-message:not(.error) .decrypted-message__failure {
   display: none;
 }
 
-.safe-send__decrypted-message.error .decrypted-message__success {
+.seen-once__decrypted-message.error .decrypted-message__success {
   display: none;
 }
 
@@ -70,23 +70,23 @@
   display: none;
 }
 
-.safe-send__decrypted-message[data-status-code="404"] .decrypted-message__failure-404 {
+.seen-once__decrypted-message[data-status-code="404"] .decrypted-message__failure-404 {
   display: block;
 }
 
-.safe-send__decrypted-message[data-status-code="500"] .decrypted-message__failure-500 {
+.seen-once__decrypted-message[data-status-code="500"] .decrypted-message__failure-500 {
   display: block;
 }
 
-.safe-send__decrypted-message:not([data-status-code="404"]):not([data-status-code="500"]) .decrypted-message__failure-other {
+.seen-once__decrypted-message:not([data-status-code="404"]):not([data-status-code="500"]) .decrypted-message__failure-other {
   display: none;
 }
 
-.safe-send.decoded-response-returned .safe-send__reveal {
+.seen-once.decoded-response-returned .seen-once__reveal {
   display: none;
 }
 
-.safe-send.form-submitted .form {
+.seen-once.form-submitted .form {
   display: none;
 }
 
@@ -225,7 +225,7 @@ details h2 {
   width: 80rem;
 }
 
-.safe-send {
+.seen-once {
   display: inline-block;
   width: 100%;
 }
@@ -278,7 +278,7 @@ strong {
   color: var(--error-fg);
 }
 
-.safe-send__inner > * {
+.seen-once__inner > :not(:first-child) {
   margin: 5rem 0;
 }
 
@@ -310,7 +310,7 @@ strong {
   pointer-events: none;
 }
 
-.safe-send__intro-heading {
+.seen-once__intro-heading {
   font-size: 3.5rem;
   margin-bottom: 1.5rem;
   margin-top: 2.5rem;
@@ -320,7 +320,7 @@ strong {
   display: block;
 }
 
-.safe-send__intro-heading .light-text {
+.seen-once__intro-heading .light-text {
   opacity: 0.25;
 }
 
@@ -334,7 +334,7 @@ strong {
 }
 
 .decrypted-message__failure button,
-.safe-send__url-share-container button,
+.seen-once__url-share-container button,
 .decrypted-message__success button {
   margin-top: 4.2rem;
 }
