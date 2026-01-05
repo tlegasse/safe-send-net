@@ -11,14 +11,11 @@ from aws_cdk import (
     aws_cloudfront_origins as origins,
     aws_certificatemanager as acm,
     aws_wafv2 as wafv2,
+    aws_route53_patterns as route53_patterns,
     CfnOutput,
     aws_route53_targets as route53_targets,
 )
 from constructs import Construct
-
-
-# [WARNING] aws-cdk-lib.aws_cloudfront_origins.S3Origin is deprecated.
-#   Use `S3BucketOrigin` or `S3StaticWebsiteOrigin` instead.
 
 class ClientStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
@@ -74,13 +71,11 @@ class ClientStack(Stack):
             comment=f"OAI for the static site from stack:{Aws.STACK_NAME}"
         )
 
-        # Origin with OAI
         origin = origins.S3Origin(
             client_site_bucket,
             origin_access_identity=origin_access_identity
         )
 
-        # Certificate (must be in us-east-1)
         cert = acm.Certificate(self, "SiteCert",
             domain_name="safe-send.net",
             subject_alternative_names=["www.safe-send.net"],
@@ -121,7 +116,7 @@ class ClientStack(Stack):
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 response_headers_policy=response_headers_policy
             ),
-            domain_names=["safe-send.net", "www.safe-send.net"],
+            domain_names=["safe-send.net"],
             certificate=cert,
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
             enable_logging=False,
@@ -141,18 +136,18 @@ class ClientStack(Stack):
             distribution_paths=["/*"]
         )
 
+        route53_patterns.HttpsRedirect(self, "WwwRedirect",
+            record_names=["www.safe-send.net"],
+            target_domain="safe-send.net",
+            zone=client_zone
+        )
+
         # Route53 record
         route53.ARecord(self, "SiteAliasRecord",
             zone=client_zone,
             target=route53.RecordTarget.from_alias(
                 route53_targets.CloudFrontTarget(distribution) # type: ignore
             )
-        )
-
-        route53.CnameRecord(self, "WwwAliasRecord",
-            zone=client_zone,
-            record_name="www",
-            domain_name=distribution.distribution_domain_name
         )
 
         client_site_output = CfnOutput(
